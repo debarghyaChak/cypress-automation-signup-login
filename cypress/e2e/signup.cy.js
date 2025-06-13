@@ -1,18 +1,31 @@
-import SignupPage from "../support/PageObjects/SignupPage";
+/// <reference types="cypress" />
 
-describe('User Sign-Up Automation', () => {
-    beforeEach(() => {
-        cy.visit('https://magento.softwaretestingboard.com/customer/account/create/');
-    });
+describe("Magento Signup Test", () => {
+  it("should sign up a new user and verify success message", () => {
+    const randomSuffix = Math.floor(Math.random() * 100000);
+    const email = `testuser${randomSuffix}@example.com`;
 
-    it('Should successfully create a new account', () => {
-        SignupPage.enterFirstName('Debarghya');
-        SignupPage.enterLastName('Chakravarty');
-        SignupPage.enterEmail(`test${Date.now()}@email.com`);
-        SignupPage.enterPassword('SecurePass@123');
-        SignupPage.enterConfirmPassword('SecurePass@123');
-        SignupPage.submitForm();
+    cy.visit("https://magento.softwaretestingboard.com/customer/account/create/");
 
-        cy.contains('Thank you for registering with Main Website Store',{timeout:10000}).should('be.visible');
-    });
+    cy.get("#firstname").type("John");
+    cy.get("#lastname").type("Doe");
+    cy.get("#email_address").type(email);
+    cy.get("#password").type("Test@1234");
+    cy.get("#password-confirmation").type("Test@1234");
+
+    cy.get("button[title='Create an Account']").click();
+
+    // Assert URL redirected to account page
+    cy.url().should("match", /\/customer\/account\/?/);
+
+    // Take a screenshot after redirect
+    cy.screenshot("after-signup-redirect");
+
+    // Assert success message is visible and contains expected text
+    cy.get("div.message-success.success.message", { timeout: 10000 })
+      .should("exist")
+      .should("be.visible")
+      .invoke("text")
+      .should("include", "Thank you for registering with Main Website Store.");
+  });
 });
