@@ -13,6 +13,6 @@ describe('User Sign-Up Automation', () => {
         SignupPage.enterConfirmPassword('SecurePass@123');
         SignupPage.submitForm();
 
-        cy.contains('Thank you for registering',{timeout:10000}).should('be.visible');
+        cy.contains('Thank you for registering with main website store',{timeout:10000}).should('be.visible');
     });
 });
